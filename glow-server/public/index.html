@@ -526,7 +526,10 @@ async function enterDash(){
   ge('sbName').textContent=CUR.name;
   ge('sbRole').textContent=CUR.role==='admin'?'관리자':'일반 회원';
   ge('welName').textContent=CUR.name;
-  if(CUR.role==='admin'){ge('si-admin').style.display='flex';ge('bni-admin').style.display='flex'}
+  // 어드민 메뉴 - role이 admin일 때만 표시
+  var siAdmin=ge('si-admin'),bniAdmin=ge('bni-admin');
+  if(siAdmin)siAdmin.style.display=CUR.role==='admin'?'flex':'none';
+  if(bniAdmin)bniAdmin.style.display=CUR.role==='admin'?'flex':'none';
   updBal();
   await loadSvcs();
   renderQCards();renderSfBar();
@@ -545,6 +548,8 @@ async function refreshMe(){
 
 // ── 탭 전환 ──
 function goTab(tab){
+  // 어드민 탭 접근 차단
+  if(tab==='admin'&&(!CUR||CUR.role!=='admin')){toast('접근 권한이 없습니다','err');return}
   document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
   document.querySelectorAll('.si').forEach(function(s){s.classList.remove('on')});
   document.querySelectorAll('.bni').forEach(function(b){b.classList.remove('on')});
